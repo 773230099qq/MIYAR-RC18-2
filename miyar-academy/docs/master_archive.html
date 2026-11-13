@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>MIYAR COMPLETE MASTER ARCHIVE</title>
+<style>
+@page {
+    size: A4;
+    margin: 20mm 15mm;
+    background-color: #fafbfc;
+    @bottom-center {
+        content: "صفحة " counter(page) " من " counter(pages);
+        font-size: 9pt;
+        color: #7f8c8d;
+        font-family: Arial, sans-serif;
+    }
+}
+body { font-family: 'Traditional Arabic', Tahoma, Arial, sans-serif; direction: rtl; color: #2c3e50; line-height: 1.7; font-size: 11pt; margin: 0; padding: 0; }
+h1 { color: #1b365d; border-bottom: 2px solid #3498db; padding-bottom: 8px; font-size: 18pt; text-align: center; }
+h2 { color: #2980b9; margin-top: 25px; font-size: 14pt; border-bottom: 1px solid #dcdde1; padding-bottom: 4px; page-break-after: avoid; }
+.card { background: #fff; border: 1px solid #dcdde1; border-radius: 6px; padding: 15px; margin-bottom: 15px; page-break-inside: avoid; }
+ul { margin: 5px 0 15px 0; padding-right: 20px; }
+li { margin-bottom: 5px; }
+</style>
+</head>
+<body>
+<h1>أكاديمية MIYAR التعليمية</h1>
+<h2 style="text-align:center; border:none; color:#1b365d; margin-top:0;">الأرشيف التقني والأكاديمي الشامل (MIYAR Complete Master Archive)</h2>
+
+<div class="card">
+    <h2>1. مقدمة وهندسة النظام العام</h2>
+    <p>توثيق هندسي وأكاديمي متكامل لمنصة MIYAR الوبائية الأكاديمية ثنائية اللغة، تشمل المستويات التأسيسية، المتوسطة، والمتقدمة (A-301 إلى A-307) مع دعم تشغيل أكواد لغة R وإجراءات التشغيل والتوسع المؤسسي.</p>
+</div>
+
+<div class="card">
+    <h2>2. الهيكل الهرمي الثلاثي للأكاديمية ومسار المستوى المتقدم</h2>
+    <p>يغطي المسار الأكاديمي سبعة مقررات تخصصية متقدمة:</p>
+    <ul>
+        <li><code>A-301</code>: الاستدلال السببي المتقدم وطرق التقدير الهيكلية (IPW, MSMs).</li>
+        <li><code>A-302</code>: تحليل البقاء ونمذجة الوقت حتى الحدث (Kaplan-Meier, Cox Models).</li>
+        <li><code>A-303</code>: الوبائيات المكانية والزمنية ونمذجة السلاسل الزمنية (SARIMA, SaTScan, R-INLA).</li>
+        <li><code>A-304</code>: التعلم الآلي والإحصاء الحيوي البايزي (Random Forests, Bayesian Inference).</li>
+        <li><code>A-305</code>: المراجعات المنهجية وتحليل التلوية (PRISMA, Meta-Analysis in R).</li>
+        <li><code>A-306</code>: هندسة أنظمة الترصد المتقدمة واللوائح الصحية الدولية (IHR 2005, JEE).</li>
+        <li><code>A-307</code>: الاقتصاد الصحي وتحليلات التكلفة والفعالية (CEA/CUA, ICER).</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h2>3. المواصفات الفنية وبنية النظام (Technical Handoff & Architecture)</h2>
+    <p>الاعتماد على نموذج الإصدار الأول (Minimum Viable Academy - MVA):</p>
+    <ul>
+        <li><strong>Backend:</strong> Node.js / Express مع قاعدة بيانات PostgreSQL ومصادقة JWT.</li>
+        <li><strong>Frontend:</strong> Next.js / React بتصميم متجاوب ثنائي اللغة.</li>
+        <li><strong>R-Sandbox:</strong> بيئة تنفيذ معزولة عبر Docker containers لضمان الأمان الكامل ومنع اختراق الموارد.</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h2>4. إجراءات التشغيل، الصيانة والدعم المستمر (Phase 6)</h2>
+    <ul>
+        <li><strong>المراقبة الآلية للأداء:</strong> تتبع استهلاك الذاكرة، المعالج، واستجابة خادم الـ API على مدار الساعة.</li>
+        <li><strong>النسخ الاحتياطي التلقائي:</strong> جدولة نسخ يومية لقاعدة البيانات وسجلات المستخدمين.</li>
+        <li><strong>التحديثات والأمان:</strong> متابعة الثغرات وسدها دوريًا لحزم الخادم وحاويات Docker.</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h2>5. تدريب المستخدمين وبناء القدرات (Phase 7)</h2>
+    <ul>
+        <li><strong>دليل الطلاب:</strong> جولات تفاعلية لشرح المقررات ومختبر R التفاعلي.</li>
+        <li><strong>ورش عمل المدرسين:</strong> تدريب على إضافة المحتوى وتقييم الواجبات عبر لوحة التحكم.</li>
+        <li><strong>الأدلة الإرشادية:</strong> توفير وثائق ومقاطع فيديو ثنائية اللغة.</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h2>6. تقييم الأثر الأكاديمي والصحي وتحليلات التعلم (Phase 8)</h2>
+    <ul>
+        <li><strong>تحليلات التعلم:</strong> قياس نسب إتمام المقررات ودرجات الاختبارات.</li>
+        <li><strong>أداء مختبر R:</strong> مراقبة سرعة استجابة تنفيذ الأكواد وحالة الحاويات.</li>
+        <li><strong>التغذية الراجعة:</strong> تطوير المناهج دوريًا بناءً على تقييمات الباحثين والمحكمين.</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h2>7. الاعتماد المؤسسي والتوسع الإقليمي (Phase 9)</h2>
+    <ul>
+        <li><strong>الشراكات الأكاديمية:</strong> التعاون مع الجامعات وكليات الصحة العامة للاعتماد المؤسسي.</li>
+        <li><strong>الشهادات الرقمية:</strong> تفعيل نظام إصدار شهادات إنجاز وشارات كفاءة رقمية موثقة.</li>
+        <li><strong>التوسع المستقبلي:</strong> إطلاق محاكي الفاشيات الوبائية ومختبر الوبائيات المكانية والزمنية (Phase 2).</li>
+    </ul>
+</div>
+
+</body>
+</html>

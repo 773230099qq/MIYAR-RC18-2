@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: miyar
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: miyar
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U miyar"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: .
+    environment:
+      DATABASE_URL: postgres://miyar:${POSTGRES_PASSWORD}@db:5432/miyar
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      R_SANDBOX_MODE: docker
+      R_SANDBOX_IMAGE: miyar/r-sandbox:latest
+      R_LAB_HOST_DIR: ${R_LAB_HOST_DIR:-/opt/miyar/r-lab}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build: ./frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+
+  r-sandbox:
+    build: ./r-sandbox
+    image: miyar/r-sandbox:latest
+    entrypoint: ["sleep", "infinity"]
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+
+volumes:
+  pgdata:

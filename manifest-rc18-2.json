@@ -1,0 +1,13 @@
+{
+  "name": "MIYAR Public Health RC18.2",
+  "short_name": "MIYAR",
+  "description": "منصة تعليمية للصحة العامة والوبائيات - تعمل دون إنترنت",
+  "start_url": "./MIYAR-RC18.2.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0B4D28",
+  "theme_color": "#0B4D28",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": []
+}

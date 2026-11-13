@@ -6,7 +6,7 @@ n <- 2000
 age <- rnorm(n, 55, 12)
 severity <- rbinom(n, 1, plogis((age - 55) / 15))
 treatment <- rbinom(n, 1, plogis(-1.5 + 0.03 * age + 1.8 * severity))
-utcome <- rbinom(n, 1, plogis(-2.0 - 0.7 * treatment + 0.05 * age + 2 * severity))
+  outcome <- rbinom(n, 1, plogis(-2.0 - 0.7 * treatment + 0.05 * age + 2 * severity))
 obs_data <- data.frame(age, severity, treatment, outcome)
 ps_model <- glm(treatment ~ age + severity, data = obs_data, family = binomial)
 obs_data$ps <- predict(ps_model, type = "response")

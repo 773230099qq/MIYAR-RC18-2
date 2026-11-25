@@ -25,14 +25,28 @@ async function unmetRequirements(courseId, userId) {
 router.get("/levels", async (req, res, next) => {
   try {
     const { rows } = await query(
-      `SELECT c.id, c.course_code, c.title_ar, c.title_en, c.level, c.blurb_ar, c.blurb_en, c.approval_status, c2.course_code AS required_course_code
+      `SELECT c.id, c.course_code, c.title_ar, c.title_en, c.level, c.blurb_ar, c.blurb_en, c.approval_status,
+              c2.course_code AS required_course_code
        FROM courses c
        LEFT JOIN requirements rq ON rq.course_id = c.id
        LEFT JOIN courses c2 ON c2.id = rq.required_course_id
        ORDER BY CASE c.level WHEN 'Foundational' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END,
                 c.course_code`
     );
-    res.json({ levels: rows });
+    // دمج الصفوف المكررة للمقرر الواحد (في حال تعدد المتطلبات السابقة)
+    const merged = new Map();
+    for (const r of rows) {
+      if (!merged.has(r.course_code)) {
+        merged.set(r.course_code, { ...r, required_course_codes: [] });
+      }
+      if (r.required_course_code) {
+        merged.get(r.course_code).required_course_codes.push(r.required_course_code);
+      }
+    }
+    const levels = [...merged.values()].map((c) => (c.required_course_codes.length === 1
+      ? { ...c, required_course_code: c.required_course_codes[0] }
+      : c));
+    res.json({ levels });
   } catch (err) {
     next(err);
   }

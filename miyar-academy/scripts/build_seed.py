@@ -61,11 +61,26 @@ CODE_MAP = {
 
 LEVEL_MAP = {"Foundation": "Foundational", "Intermediate": "Intermediate", "Advanced": "Advanced"}
 
+# مقرراتنا القائمة (ليست في خرائط EPIACADEMY لكنها أشباه متطلبات سابقة جوهرية)
+OUR_COURSES = [
+    ("B-103", "الصحة العامة ومؤشراتها", "Public Health Basics", "Foundational"),
+    ("C-202", "الانحدار في الإحصاء الحيوي", "Regression in Biostatistics", "Intermediate"),
+    ("C-203", "تحليل البيانات الصحية", "Health Data Analysis", "Intermediate"),
+    ("A-301", "الاستدلال السببي المتقدم", "Advanced Causal Inference", "Advanced"),
+    ("A-302", "تحليل البقاء", "Survival Analysis", "Advanced"),
+    ("A-303", "السلاسل الزمنية والتنبؤ", "Time Series & Forecasting", "Advanced"),
+    ("A-304", "التعلم الآلي والإحصاء البايزي", "Machine Learning & Bayesian Statistics", "Advanced"),
+    ("A-305", "المراجعات المنهجية والتحليل التلوّي", "Meta-Analysis", "Advanced"),
+    ("A-306", "هندسة أنظمة الترصد", "Surveillance Systems Engineering", "Advanced"),
+    ("A-307", "الاقتصاد الصحي وحساب ICER", "Health Economics & ICER", "Advanced"),
+]
+
 # مقررات EPIACADEMY المراد دمجها: 22 (8 تأسيسي + 7 متوسط + 7 متقدم)
 ADOPTED = [c["code"] for c in data["registry"] if c["level"] in LEVEL_MAP]
 
 # متطلبات سابقة إضافية (بالترميز الموحد) — استكمال قاعدة الـ80%
 EXTRA_REQUIREMENTS = [
+    ("C-201", "B-101"),  # كانت قبلًا في الاختبارات فقط — الآن في الإنتاج
     ("C-204", "B-101"),
     ("C-205", "B-101"),
     ("C-206", "B-102"),
@@ -86,7 +101,16 @@ lines = ["-- تم إنشاؤه آليًا بواسطة scripts/build_seed.py —
 lines.append("BEGIN;")
 lines.append("")
 
-# ===== المقررات =====
+# ===== مقرراتنا القائمة =====
+for code, ar, en, level in OUR_COURSES:
+    lines.append(
+        f"INSERT INTO courses (course_code, title_ar, title_en, level, source_ref, blurb_ar, blurb_en, approval_status) "
+        f"VALUES ({sql_str(code)}, {sql_str(ar)}, {sql_str(en)}, {sql_str(level)}, NULL, NULL, NULL, 'draft') "
+        f"ON CONFLICT (course_code) DO UPDATE SET title_ar=EXCLUDED.title_ar, title_en=EXCLUDED.title_en, level=EXCLUDED.level;"
+    )
+lines.append("")
+
+# ===== المقررات المدموجة =====
 course_rows = []
 for src_code in ADOPTED:
     c = registry[src_code]

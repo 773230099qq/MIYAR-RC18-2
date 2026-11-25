@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
           <nav style={{ display: "flex", gap: 16 }}>
             <a href="/" style={{ color: "#fff", textDecoration: "none" }}>الرئيسية</a>
             <a href="/courses" style={{ color: "#fff", textDecoration: "none" }}>المقررات</a>
+            <a href="/levels" style={{ color: "#fff", textDecoration: "none" }}>المستويات</a>
             <a href="/login" style={{ color: "#fff", textDecoration: "none" }}>تسجيل الدخول</a>
           </nav>
         </header>

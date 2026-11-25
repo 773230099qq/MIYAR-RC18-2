@@ -66,10 +66,10 @@ export default async function LevelsPage() {
                 </div>
                 <div style={{ color: "#7f8c8d", fontSize: 14, marginTop: 4 }}>{c.title_en}</div>
                 <div style={{ marginTop: 6 }}>
-                  {c.required_course_code ? (
+                  {c.required_course_codes && c.required_course_codes.length > 0 ? (
                     <span style={{ color: "#b26a00", fontSize: 14 }}>
-                      ⚠ يتطلب إكمال مقرر {c.required_course_code} بنسبة 80% على الأقل
-                    </span>
+                      ⚠ يتطلب إكمال مقرر {c.required_course_codes.join("، ")} بنسبة 80% على الأقل
+                  </span>
                   ) : (
                     <span style={{ color: "#1e7e34", fontSize: 14 }}>
                       ✓ متاح للتسجيل مباشرة

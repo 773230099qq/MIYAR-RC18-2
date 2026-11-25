@@ -25,14 +25,85 @@ async function unmetRequirements(courseId, userId) {
 router.get("/levels", async (req, res, next) => {
   try {
     const { rows } = await query(
-      `SELECT c.id, c.course_code, c.title_ar, c.title_en, c.level, c2.course_code AS required_course_code
+      `SELECT c.id, c.course_code, c.title_ar, c.title_en, c.level, c.blurb_ar, c.blurb_en, c.approval_status,
+              c2.course_code AS required_course_code
        FROM courses c
        LEFT JOIN requirements rq ON rq.course_id = c.id
        LEFT JOIN courses c2 ON c2.id = rq.required_course_id
        ORDER BY CASE c.level WHEN 'Foundational' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END,
                 c.course_code`
     );
-    res.json({ levels: rows });
+    // دمج الصفوف المكررة للمقرر الواحد (في حال تعدد المتطلبات السابقة)
+    const merged = new Map();
+    for (const r of rows) {
+      if (!merged.has(r.course_code)) {
+        merged.set(r.course_code, { ...r, required_course_codes: [] });
+      }
+      if (r.required_course_code) {
+        merged.get(r.course_code).required_course_codes.push(r.required_course_code);
+      }
+    }
+    const levels = [...merged.values()].map((c) => (c.required_course_codes.length === 1
+      ? { ...c, required_course_code: c.required_course_codes[0] }
+      : c));
+    res.json({ levels });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// فهرس محاضرات مقرر (عناوين فقط + حالة الموافقة)
+router.get("/:code/lectures", async (req, res, next) => {
+  try {
+    const { rows: course } = await query(
+      "SELECT id, course_code FROM courses WHERE course_code = $1",
+      [req.params.code]
+    );
+    if (course.length === 0) {
+      return res.status(404).json({ error: "المقرر غير موجود" });
+    }
+    const { rows } = await query(
+      "SELECT lecture_no, title_ar, title_en, objectives_ar, objectives_en FROM lectures WHERE course_id = $1 ORDER BY lecture_no",
+      [course[0].id]
+    );
+    res.json({ course_code: course[0].course_code, lectures: rows });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// محاضرة مفردة بمحتواها الكامل واختبارها التكويني
+router.get("/:code/lectures/:no", async (req, res, next) => {
+  try {
+    const no = parseInt(req.params.no, 10);
+    if (!Number.isInteger(no) || no < 1) {
+      return res.status(400).json({ error: "رقم المحاضرة غير صالح" });
+    }
+    const { rows: course } = await query(
+      "SELECT id, course_code, approval_status FROM courses WHERE course_code = $1",
+      [req.params.code]
+    );
+    if (course.length === 0) {
+      return res.status(404).json({ error: "المقرر غير موجود" });
+    }
+    const { rows } = await query(
+      `SELECT lecture_no, title_ar, title_en, objectives_ar, objectives_en, body_ar, body_en, payload, quiz_json
+       FROM lectures WHERE course_id = $1 AND lecture_no = $2`,
+      [course[0].id, no]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "المحاضرة غير موجودة" });
+    }
+    const lec = rows[0];
+    res.json({
+      course_code: course[0].course_code,
+      approval_status: course[0].approval_status,
+      lecture: {
+        ...lec,
+        payload: lec.payload ? JSON.parse(lec.payload) : null,
+        quiz: lec.quiz_json ? JSON.parse(lec.quiz_json) : [],
+      },
+    });
   } catch (err) {
     next(err);
   }
@@ -41,7 +112,7 @@ router.get("/levels", async (req, res, next) => {
 router.get("/", async (req, res, next) => {
   try {
     const { rows } = await query(
-      "SELECT id, course_code, title_ar, title_en, level FROM courses ORDER BY id"
+      "SELECT id, course_code, title_ar, title_en, level, source_ref, blurb_ar, blurb_en, approval_status FROM courses ORDER BY id"
     );
     res.json({ courses: rows });
   } catch (err) {
@@ -68,7 +139,7 @@ router.get("/:code/eligibility", authenticate, async (req, res, next) => {
 router.get("/:code", async (req, res, next) => {
   try {
     const { rows } = await query(
-      "SELECT id, course_code, title_ar, title_en, level FROM courses WHERE course_code = $1",
+      "SELECT id, course_code, title_ar, title_en, level, source_ref, blurb_ar, blurb_en, approval_status FROM courses WHERE course_code = $1",
       [req.params.code]
     );
     if (rows.length === 0) {

@@ -15,7 +15,7 @@ miyar-academy/
 │   ├── db.js             # طبقة قاعدة البيانات (pg Pool)
 │   ├── middleware/auth.js# مصادقة JWT + تحكم بالأدوار
 │   ├── routes/           # auth, courses, enrollments, rlab
-│   └── tests/            # 21 اختبارًا آليًا (node:test + pg-mem)
+│   └── tests/            # 29 اختبارًا آليًا (node:test + pg-mem)
 ├── db/schema.sql         # مخطط PostgreSQL (users, courses, enrollments)
 ├── frontend/             # الفرونت-إند (Next.js 14 / React 18)
 │   └── app/              # الرئيسية، المقررات، تسجيل الدخول
@@ -39,6 +39,10 @@ miyar-academy/
 | `/api/enrollments` | POST | التسجيل في مقرر | نعم |
 | `/api/enrollments/me` | GET | تسجيلات المستخدم وتقدمه | نعم |
 | `/api/enrollments/:id/progress` | PATCH | تحديث نسبة التقدم (0-100) | نعم |
+| `/api/quizzes?course=CODE` | GET | اختبارات المقرر مع الأسئلة | لا |
+| `/api/quizzes` | POST | إنشاء اختبار كامل | Admin/Instructor |
+| `/api/quizzes/:id/submit` | POST | تسليم الإجابات والتصحيح الآلي | نعم |
+| `/api/quizzes/:id/attempts/me` | GET | محاولاتي السابقة | نعم |
 | `/api/rlab/scripts` | GET | السكربتات المسموحة | نعم |
 | `/api/rlab/run` | POST | تنفيذ سكربت R من القائمة البيضاء | نعم |
 
@@ -138,7 +142,7 @@ psql -U $(whoami) -d miyar -f db/seed_curriculum.sql
 ## الاختبارات
 
 ```bash
-npm test   # 35 اختبارًا: المصادقة، المقررات، المحاضرات، التسجيلات، مختبر R، نظام المستويات
+npm test   # 36 اختبارًا: المصادقة، المقررات، التسجيلات، مختبر R، نظام المستويات، الاختبارات الآلية
 ```
 
 تُنفذ الاختبارات على قاعدة بيانات في الذاكرة (pg-mem) دون الحاجة لخادم PostgreSQL.

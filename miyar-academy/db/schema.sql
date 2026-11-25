@@ -13,7 +13,11 @@ CREATE TABLE courses (
     course_code VARCHAR(20) UNIQUE NOT NULL,
     title_ar VARCHAR(255) NOT NULL,
     title_en VARCHAR(255) NOT NULL,
-    level VARCHAR(50) NOT NULL
+    level VARCHAR(50) NOT NULL,
+    source_ref VARCHAR(20),
+    blurb_ar TEXT,
+    blurb_en TEXT,
+    approval_status VARCHAR(20) NOT NULL DEFAULT 'draft'
 );
 
 CREATE TABLE enrollments (
@@ -38,3 +42,19 @@ CREATE TABLE requirements (
 
 CREATE INDEX idx_requirements_course ON requirements(course_id);
 CREATE INDEX idx_requirements_required_course ON requirements(required_course_id);
+
+-- المحاضرات المفصلة (محتوى ثنائي اللغة من EPIACADEMY Update 32)
+CREATE TABLE lectures (
+    id SERIAL PRIMARY KEY,
+    course_id INT REFERENCES courses(id),
+    lecture_no INT NOT NULL,
+    title_ar VARCHAR(255) NOT NULL,
+    title_en VARCHAR(255) NOT NULL,
+    objectives_ar TEXT,
+    objectives_en TEXT,
+    body_ar TEXT,
+    body_en TEXT,
+    payload TEXT,
+    quiz_json TEXT,
+    UNIQUE (course_id, lecture_no)
+);

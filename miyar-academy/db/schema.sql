@@ -27,3 +27,39 @@ CREATE TABLE enrollments (
 
 CREATE INDEX idx_enrollments_user ON enrollments(user_id);
 CREATE INDEX idx_enrollments_course ON enrollments(course_id);
+
+-- نظام الاختبارات الآلية (REQ-003)
+CREATE TABLE quizzes (
+    id SERIAL PRIMARY KEY,
+    course_id INT REFERENCES courses(id),
+    title_ar VARCHAR(255) NOT NULL,
+    title_en VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE questions (
+    id SERIAL PRIMARY KEY,
+    quiz_id INT REFERENCES quizzes(id),
+    question_text VARCHAR(500) NOT NULL,
+    correct_index INT NOT NULL CHECK (correct_index >= 0),
+    points INT NOT NULL DEFAULT 1
+);
+
+CREATE TABLE answers (
+    id SERIAL PRIMARY KEY,
+    question_id INT REFERENCES questions(id),
+    idx INT NOT NULL,
+    text VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE attempts (
+    id SERIAL PRIMARY KEY,
+    quiz_id INT REFERENCES quizzes(id),
+    user_id INT REFERENCES users(id),
+    score INT NOT NULL,
+    total INT NOT NULL,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_questions_quiz ON questions(quiz_id);
+CREATE INDEX idx_answers_question ON answers(question_id);
+CREATE INDEX idx_attempts_user ON attempts(user_id);

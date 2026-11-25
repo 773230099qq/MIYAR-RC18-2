@@ -27,3 +27,14 @@ CREATE TABLE enrollments (
 
 CREATE INDEX idx_enrollments_user ON enrollments(user_id);
 CREATE INDEX idx_enrollments_course ON enrollments(course_id);
+
+-- المتطلبات السابقة: مقرر لا يمكن التسجيل فيه قبل إكمال مقرر آخر بنسبة 80%
+CREATE TABLE requirements (
+    id SERIAL PRIMARY KEY,
+    course_id INT REFERENCES courses(id),
+    required_course_id INT REFERENCES courses(id),
+    UNIQUE (course_id, required_course_id)
+);
+
+CREATE INDEX idx_requirements_course ON requirements(course_id);
+CREATE INDEX idx_requirements_required_course ON requirements(required_course_id);

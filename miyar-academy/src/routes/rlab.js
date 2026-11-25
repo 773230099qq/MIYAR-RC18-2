@@ -5,6 +5,12 @@ const { requireRole } = require("../middleware/auth");
 const router = express.Router();
 
 const ALLOWED_SCRIPTS = new Set([
+  "B101_intro_epi.R",
+  "B102_biostats.R",
+  "B103_public_health.R",
+  "C201_study_designs.R",
+  "C202_regression.R",
+  "C203_health_data.R",
   "A301_ipw.R",
   "A302_survival.R",
   "A303_sarima.R",

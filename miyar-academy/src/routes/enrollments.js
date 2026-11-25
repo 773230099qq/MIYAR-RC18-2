@@ -1,6 +1,7 @@
 const express = require("express");
 const { query } = require("../db");
 const { authenticate } = require("../middleware/auth");
+const { unmetRequirements } = require("./courses");
 
 const router = express.Router();
 router.use(authenticate);
@@ -28,6 +29,18 @@ router.post("/", async (req, res, next) => {
     const { rows: course } = await query("SELECT id FROM courses WHERE id = $1", [course_id]);
     if (course.length === 0) {
       return res.status(404).json({ error: "المقرر غير موجود" });
+    }
+    // فرض المتطلبات السابقة: يجب إكمال كل متطلب بنسبة 80% على الأقل
+    const missing = await unmetRequirements(course_id, req.user.sub);
+    if (missing.length > 0) {
+      return res.status(403).json({
+        error: "لم تكمل المتطلبات السابقة لهذا المقرر",
+        missing: missing.map((m) => ({
+          course_code: m.course_code,
+          progress: Number(m.progress),
+          required: 80,
+        })),
+      });
     }
     const { rows } = await query(
       `INSERT INTO enrollments (user_id, course_id)

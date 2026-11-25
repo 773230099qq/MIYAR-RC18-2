@@ -1,0 +1,44 @@
+name: MIYAR CI
+
+on:
+  push:
+    paths:
+      - "miyar-academy/**"
+      - ".github/workflows/miyar-ci.yml"
+  pull_request:
+    paths:
+      - "miyar-academy/**"
+      - ".github/workflows/miyar-ci.yml"
+
+jobs:
+  backend-tests:
+    name: Backend tests (pg-mem)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: miyar-academy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install
+      - name: Run test suite
+        run: npm test
+
+  frontend-build:
+    name: Frontend build (Next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: miyar-academy/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build

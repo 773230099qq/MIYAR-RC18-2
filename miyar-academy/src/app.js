@@ -2,6 +2,7 @@ const express = require("express");
 const authRoutes = require("./routes/auth");
 const courseRoutes = require("./routes/courses");
 const enrollmentRoutes = require("./routes/enrollments");
+const quizRoutes = require("./routes/quizzes");
 const { router: rlabRoutes } = require("./routes/rlab");
 const { authenticate } = require("./middleware/auth");
 
@@ -15,6 +16,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/quizzes", quizRoutes);
 app.use("/api/rlab", authenticate, rlabRoutes);
 
 app.use((req, res) => {
